@@ -1,718 +1,2044 @@
 ---
-swagger: "2.0"
+openapi: 3.0.1
 info:
-  description: "This is a sample server Petstore server.  You can find out more about\
-    \ Swagger at [http://swagger.io](http://swagger.io) or on [irc.freenode.net, #swagger](http://swagger.io/irc/).\
-    \  For this sample, you can use the api key `special-key` to test the authorization\
-    \ filters."
-  version: "1.0.5"
-  title: "Swagger Petstore"
-  termsOfService: "http://swagger.io/terms/"
-  contact:
-    email: "apiteam@swagger.io"
+  title: Planova Project Management API
+  description: Planova 프로젝트의 백엔드 REST API 문서입니다.<br>효율적인 프로젝트 관리와 협업을 위한 기능을 제공합니다.
   license:
-    name: "Apache 2.0"
-    url: "http://www.apache.org/licenses/LICENSE-2.0.html"
-host: "petstore.swagger.io"
-basePath: "/v2"
-tags:
-- name: "pet"
-  description: "Everything about your Pets"
-  externalDocs:
-    description: "Find out more"
-    url: "http://swagger.io"
-- name: "store"
-  description: "Access to Petstore orders"
-- name: "user"
-  description: "Operations about user"
-  externalDocs:
-    description: "Find out more about our store"
-    url: "http://swagger.io"
-schemes:
-- "https"
-- "http"
-paths:
-  /pet/{petId}/uploadImage:
-    post:
-      tags:
-      - "pet"
-      summary: "uploads an image"
-      description: ""
-      operationId: "uploadFile"
-      consumes:
-      - "multipart/form-data"
-      produces:
-      - "application/json"
-      parameters:
-      - name: "petId"
-        in: "path"
-        description: "ID of pet to update"
-        required: true
-        type: "integer"
-        format: "int64"
-      - name: "additionalMetadata"
-        in: "formData"
-        description: "Additional data to pass to server"
-        required: false
-        type: "string"
-      - name: "file"
-        in: "formData"
-        description: "file to upload"
-        required: false
-        type: "file"
-      responses:
-        200:
-          description: "successful operation"
-          schema:
-            $ref: "#/definitions/ApiResponse"
-      security:
-      - petstore_auth:
-        - "write:pets"
-        - "read:pets"
-  /pet:
-    post:
-      tags:
-      - "pet"
-      summary: "Add a new pet to the store"
-      description: ""
-      operationId: "addPet"
-      consumes:
-      - "application/json"
-      - "application/xml"
-      produces:
-      - "application/json"
-      - "application/xml"
-      parameters:
-      - in: "body"
-        name: "body"
-        description: "Pet object that needs to be added to the store"
-        required: true
-        schema:
-          $ref: "#/definitions/Pet"
-      responses:
-        405:
-          description: "Invalid input"
-      security:
-      - petstore_auth:
-        - "write:pets"
-        - "read:pets"
-    put:
-      tags:
-      - "pet"
-      summary: "Update an existing pet"
-      description: ""
-      operationId: "updatePet"
-      consumes:
-      - "application/json"
-      - "application/xml"
-      produces:
-      - "application/json"
-      - "application/xml"
-      parameters:
-      - in: "body"
-        name: "body"
-        description: "Pet object that needs to be added to the store"
-        required: true
-        schema:
-          $ref: "#/definitions/Pet"
-      responses:
-        400:
-          description: "Invalid ID supplied"
-        404:
-          description: "Pet not found"
-        405:
-          description: "Validation exception"
-      security:
-      - petstore_auth:
-        - "write:pets"
-        - "read:pets"
-  /pet/findByStatus:
-    get:
-      tags:
-      - "pet"
-      summary: "Finds Pets by status"
-      description: "Multiple status values can be provided with comma separated strings"
-      operationId: "findPetsByStatus"
-      produces:
-      - "application/json"
-      - "application/xml"
-      parameters:
-      - name: "status"
-        in: "query"
-        description: "Status values that need to be considered for filter"
-        required: true
-        type: "array"
-        items:
-          type: "string"
-          enum:
-          - "available"
-          - "pending"
-          - "sold"
-          default: "available"
-        collectionFormat: "multi"
-      responses:
-        200:
-          description: "successful operation"
-          schema:
-            type: "array"
-            items:
-              $ref: "#/definitions/Pet"
-        400:
-          description: "Invalid status value"
-      security:
-      - petstore_auth:
-        - "write:pets"
-        - "read:pets"
-  /pet/findByTags:
-    get:
-      tags:
-      - "pet"
-      summary: "Finds Pets by tags"
-      description: "Multiple tags can be provided with comma separated strings. Use\
-        \ tag1, tag2, tag3 for testing."
-      operationId: "findPetsByTags"
-      produces:
-      - "application/json"
-      - "application/xml"
-      parameters:
-      - name: "tags"
-        in: "query"
-        description: "Tags to filter by"
-        required: true
-        type: "array"
-        items:
-          type: "string"
-        collectionFormat: "multi"
-      responses:
-        200:
-          description: "successful operation"
-          schema:
-            type: "array"
-            items:
-              $ref: "#/definitions/Pet"
-        400:
-          description: "Invalid tag value"
-      security:
-      - petstore_auth:
-        - "write:pets"
-        - "read:pets"
-      deprecated: true
-  /pet/{petId}:
-    get:
-      tags:
-      - "pet"
-      summary: "Find pet by ID"
-      description: "Returns a single pet"
-      operationId: "getPetById"
-      produces:
-      - "application/json"
-      - "application/xml"
-      parameters:
-      - name: "petId"
-        in: "path"
-        description: "ID of pet to return"
-        required: true
-        type: "integer"
-        format: "int64"
-      responses:
-        200:
-          description: "successful operation"
-          schema:
-            $ref: "#/definitions/Pet"
-        400:
-          description: "Invalid ID supplied"
-        404:
-          description: "Pet not found"
-      security:
-      - api_key: []
-    post:
-      tags:
-      - "pet"
-      summary: "Updates a pet in the store with form data"
-      description: ""
-      operationId: "updatePetWithForm"
-      consumes:
-      - "application/x-www-form-urlencoded"
-      produces:
-      - "application/json"
-      - "application/xml"
-      parameters:
-      - name: "petId"
-        in: "path"
-        description: "ID of pet that needs to be updated"
-        required: true
-        type: "integer"
-        format: "int64"
-      - name: "name"
-        in: "formData"
-        description: "Updated name of the pet"
-        required: false
-        type: "string"
-      - name: "status"
-        in: "formData"
-        description: "Updated status of the pet"
-        required: false
-        type: "string"
-      responses:
-        405:
-          description: "Invalid input"
-      security:
-      - petstore_auth:
-        - "write:pets"
-        - "read:pets"
-    delete:
-      tags:
-      - "pet"
-      summary: "Deletes a pet"
-      description: ""
-      operationId: "deletePet"
-      produces:
-      - "application/json"
-      - "application/xml"
-      parameters:
-      - name: "api_key"
-        in: "header"
-        required: false
-        type: "string"
-      - name: "petId"
-        in: "path"
-        description: "Pet id to delete"
-        required: true
-        type: "integer"
-        format: "int64"
-      responses:
-        400:
-          description: "Invalid ID supplied"
-        404:
-          description: "Pet not found"
-      security:
-      - petstore_auth:
-        - "write:pets"
-        - "read:pets"
-  /store/order:
-    post:
-      tags:
-      - "store"
-      summary: "Place an order for a pet"
-      description: ""
-      operationId: "placeOrder"
-      consumes:
-      - "application/json"
-      produces:
-      - "application/json"
-      - "application/xml"
-      parameters:
-      - in: "body"
-        name: "body"
-        description: "order placed for purchasing the pet"
-        required: true
-        schema:
-          $ref: "#/definitions/Order"
-      responses:
-        200:
-          description: "successful operation"
-          schema:
-            $ref: "#/definitions/Order"
-        400:
-          description: "Invalid Order"
-  /store/order/{orderId}:
-    get:
-      tags:
-      - "store"
-      summary: "Find purchase order by ID"
-      description: "For valid response try integer IDs with value >= 1 and <= 10.\
-        \ Other values will generated exceptions"
-      operationId: "getOrderById"
-      produces:
-      - "application/json"
-      - "application/xml"
-      parameters:
-      - name: "orderId"
-        in: "path"
-        description: "ID of pet that needs to be fetched"
-        required: true
-        type: "integer"
-        maximum: 10
-        minimum: 1
-        format: "int64"
-      responses:
-        200:
-          description: "successful operation"
-          schema:
-            $ref: "#/definitions/Order"
-        400:
-          description: "Invalid ID supplied"
-        404:
-          description: "Order not found"
-    delete:
-      tags:
-      - "store"
-      summary: "Delete purchase order by ID"
-      description: "For valid response try integer IDs with positive integer value.\
-        \ Negative or non-integer values will generate API errors"
-      operationId: "deleteOrder"
-      produces:
-      - "application/json"
-      - "application/xml"
-      parameters:
-      - name: "orderId"
-        in: "path"
-        description: "ID of the order that needs to be deleted"
-        required: true
-        type: "integer"
-        minimum: 1
-        format: "int64"
-      responses:
-        400:
-          description: "Invalid ID supplied"
-        404:
-          description: "Order not found"
-  /store/inventory:
-    get:
-      tags:
-      - "store"
-      summary: "Returns pet inventories by status"
-      description: "Returns a map of status codes to quantities"
-      operationId: "getInventory"
-      produces:
-      - "application/json"
-      parameters: []
-      responses:
-        200:
-          description: "successful operation"
-          schema:
-            type: "object"
-            additionalProperties:
-              type: "integer"
-              format: "int32"
-      security:
-      - api_key: []
-  /user/createWithArray:
-    post:
-      tags:
-      - "user"
-      summary: "Creates list of users with given input array"
-      description: ""
-      operationId: "createUsersWithArrayInput"
-      consumes:
-      - "application/json"
-      produces:
-      - "application/json"
-      - "application/xml"
-      parameters:
-      - in: "body"
-        name: "body"
-        description: "List of user object"
-        required: true
-        schema:
-          type: "array"
-          items:
-            $ref: "#/definitions/User"
-      responses:
-        default:
-          description: "successful operation"
-  /user/createWithList:
-    post:
-      tags:
-      - "user"
-      summary: "Creates list of users with given input array"
-      description: ""
-      operationId: "createUsersWithListInput"
-      consumes:
-      - "application/json"
-      produces:
-      - "application/json"
-      - "application/xml"
-      parameters:
-      - in: "body"
-        name: "body"
-        description: "List of user object"
-        required: true
-        schema:
-          type: "array"
-          items:
-            $ref: "#/definitions/User"
-      responses:
-        default:
-          description: "successful operation"
-  /user/{username}:
-    get:
-      tags:
-      - "user"
-      summary: "Get user by user name"
-      description: ""
-      operationId: "getUserByName"
-      produces:
-      - "application/json"
-      - "application/xml"
-      parameters:
-      - name: "username"
-        in: "path"
-        description: "The name that needs to be fetched. Use user1 for testing. "
-        required: true
-        type: "string"
-      responses:
-        200:
-          description: "successful operation"
-          schema:
-            $ref: "#/definitions/User"
-        400:
-          description: "Invalid username supplied"
-        404:
-          description: "User not found"
-    put:
-      tags:
-      - "user"
-      summary: "Updated user"
-      description: "This can only be done by the logged in user."
-      operationId: "updateUser"
-      consumes:
-      - "application/json"
-      produces:
-      - "application/json"
-      - "application/xml"
-      parameters:
-      - name: "username"
-        in: "path"
-        description: "name that need to be updated"
-        required: true
-        type: "string"
-      - in: "body"
-        name: "body"
-        description: "Updated user object"
-        required: true
-        schema:
-          $ref: "#/definitions/User"
-      responses:
-        400:
-          description: "Invalid user supplied"
-        404:
-          description: "User not found"
-    delete:
-      tags:
-      - "user"
-      summary: "Delete user"
-      description: "This can only be done by the logged in user."
-      operationId: "deleteUser"
-      produces:
-      - "application/json"
-      - "application/xml"
-      parameters:
-      - name: "username"
-        in: "path"
-        description: "The name that needs to be deleted"
-        required: true
-        type: "string"
-      responses:
-        400:
-          description: "Invalid username supplied"
-        404:
-          description: "User not found"
-  /user/login:
-    get:
-      tags:
-      - "user"
-      summary: "Logs user into the system"
-      description: ""
-      operationId: "loginUser"
-      produces:
-      - "application/json"
-      - "application/xml"
-      parameters:
-      - name: "username"
-        in: "query"
-        description: "The user name for login"
-        required: true
-        type: "string"
-      - name: "password"
-        in: "query"
-        description: "The password for login in clear text"
-        required: true
-        type: "string"
-      responses:
-        200:
-          description: "successful operation"
-          headers:
-            X-Expires-After:
-              type: "string"
-              format: "date-time"
-              description: "date in UTC when token expires"
-            X-Rate-Limit:
-              type: "integer"
-              format: "int32"
-              description: "calls per hour allowed by the user"
-          schema:
-            type: "string"
-        400:
-          description: "Invalid username/password supplied"
-  /user/logout:
-    get:
-      tags:
-      - "user"
-      summary: "Logs out current logged in user session"
-      description: ""
-      operationId: "logoutUser"
-      produces:
-      - "application/json"
-      - "application/xml"
-      parameters: []
-      responses:
-        default:
-          description: "successful operation"
-  /user:
-    post:
-      tags:
-      - "user"
-      summary: "Create user"
-      description: "This can only be done by the logged in user."
-      operationId: "createUser"
-      consumes:
-      - "application/json"
-      produces:
-      - "application/json"
-      - "application/xml"
-      parameters:
-      - in: "body"
-        name: "body"
-        description: "Created user object"
-        required: true
-        schema:
-          $ref: "#/definitions/User"
-      responses:
-        default:
-          description: "successful operation"
-securityDefinitions:
-  api_key:
-    type: "apiKey"
-    name: "api_key"
-    in: "header"
-  petstore_auth:
-    type: "oauth2"
-    authorizationUrl: "https://petstore.swagger.io/oauth/authorize"
-    flow: "implicit"
-    scopes:
-      read:pets: "read your pets"
-      write:pets: "modify pets in your account"
-definitions:
-  ApiResponse:
-    type: "object"
-    properties:
-      code:
-        type: "integer"
-        format: "int32"
-      type:
-        type: "string"
-      message:
-        type: "string"
-  Category:
-    type: "object"
-    properties:
-      id:
-        type: "integer"
-        format: "int64"
-      name:
-        type: "string"
-    xml:
-      name: "Category"
-  Pet:
-    type: "object"
-    required:
-    - "name"
-    - "photoUrls"
-    properties:
-      id:
-        type: "integer"
-        format: "int64"
-      category:
-        $ref: "#/definitions/Category"
-      name:
-        type: "string"
-        example: "doggie"
-      photoUrls:
-        type: "array"
-        xml:
-          wrapped: true
-        items:
-          type: "string"
-          xml:
-            name: "photoUrl"
-      tags:
-        type: "array"
-        xml:
-          wrapped: true
-        items:
-          xml:
-            name: "tag"
-          $ref: "#/definitions/Tag"
-      status:
-        type: "string"
-        description: "pet status in the store"
-        enum:
-        - "available"
-        - "pending"
-        - "sold"
-    xml:
-      name: "Pet"
-  Tag:
-    type: "object"
-    properties:
-      id:
-        type: "integer"
-        format: "int64"
-      name:
-        type: "string"
-    xml:
-      name: "Tag"
-  Order:
-    type: "object"
-    properties:
-      id:
-        type: "integer"
-        format: "int64"
-      petId:
-        type: "integer"
-        format: "int64"
-      quantity:
-        type: "integer"
-        format: "int32"
-      shipDate:
-        type: "string"
-        format: "date-time"
-      status:
-        type: "string"
-        description: "Order Status"
-        enum:
-        - "placed"
-        - "approved"
-        - "delivered"
-      complete:
-        type: "boolean"
-    xml:
-      name: "Order"
-  User:
-    type: "object"
-    properties:
-      id:
-        type: "integer"
-        format: "int64"
-      username:
-        type: "string"
-      firstName:
-        type: "string"
-      lastName:
-        type: "string"
-      email:
-        type: "string"
-      password:
-        type: "string"
-      phone:
-        type: "string"
-      userStatus:
-        type: "integer"
-        format: "int32"
-        description: "User Status"
-    xml:
-      name: "User"
+    name: Apache 2.0
+    url: http://springdoc.org
+  version: v1.0.0
 externalDocs:
-  description: "Find out more about Swagger"
-  url: "http://swagger.io"
+  description: Planova GitHub Repository
+  url: https://github.com/Gyulo94/planova-spring
+servers:
+- url: http://localhost:8000/api
+  description: 로컬 개발용
+- url: https://gyubuntu.duckdns.org/planova
+  description: 배포 서버용
+security:
+- Bearer Authentication: []
+tags:
+- name: 워크스페이스 멤버
+  description: 워크스페이스 멤버 관련 API
+- name: 이미지 업로드
+  description: 이미지 업로드 관련 API
+- name: 작업
+  description: 작업 관련 API
+- name: 인증
+  description: 인증 관련 API
+- name: 사용자
+  description: 사용자 관련 API
+- name: 프로젝트
+  description: 프로젝트 관련 API
+- name: 워크스페이스
+  description: 워크스페이스 관련 API
+paths:
+  "/workspace/{id}/update":
+    put:
+      tags:
+      - 워크스페이스
+      summary: 워크스페이스 수정
+      description: 특정 ID를 가진 워크스페이스의 정보를 수정합니다.
+      operationId: updateWorkspace
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: string
+          format: uuid
+      - name: user
+        in: query
+        required: true
+        schema:
+          "$ref": "#/components/schemas/JwtPayload"
+      requestBody:
+        content:
+          application/json:
+            schema:
+              "$ref": "#/components/schemas/WorkspaceRequest"
+        required: true
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/ApiWorkspaceResponse"
+  "/workspace/{id}/reset-invite-code":
+    put:
+      tags:
+      - 워크스페이스
+      summary: 워크스페이스 초대 코드 재설정
+      description: 특정 ID를 가진 워크스페이스의 초대 코드를 재설정합니다.
+      operationId: resetInviteCode
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: string
+          format: uuid
+      - name: user
+        in: query
+        required: true
+        schema:
+          "$ref": "#/components/schemas/JwtPayload"
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/ApiVoid"
+  "/workspace-member/{workspaceId}/member/{memberId}/update":
+    put:
+      tags:
+      - 워크스페이스 멤버
+      summary: 워크스페이스 멤버 정보 수정
+      description: 특정 워크스페이스 멤버의 정보를 수정합니다.
+      operationId: updateWorkspaceMember
+      parameters:
+      - name: workspaceId
+        in: path
+        required: true
+        schema:
+          type: string
+          format: uuid
+      - name: memberId
+        in: path
+        required: true
+        schema:
+          type: string
+          format: uuid
+      - name: user
+        in: query
+        required: true
+        schema:
+          "$ref": "#/components/schemas/JwtPayload"
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/ApiVoid"
+  "/user/{id}":
+    get:
+      tags:
+      - 사용자
+      summary: 사용자 조회
+      description: 특정 ID를 가진 사용자의 정보를 조회합니다.
+      operationId: findUserById
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: string
+          format: uuid
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/ApiUserResponse"
+    put:
+      tags:
+      - 사용자
+      summary: 사용자 정보 수정
+      description: 특정 ID를 가진 사용자의 정보를 수정합니다.
+      operationId: updateUser
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: string
+          format: uuid
+      requestBody:
+        content:
+          application/json:
+            schema:
+              "$ref": "#/components/schemas/UserUpdateRequest"
+        required: true
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/ApiUserResponse"
+    delete:
+      tags:
+      - 사용자
+      summary: 사용자 탈퇴
+      description: 특정 ID를 가진 사용자를 삭제합니다.
+      operationId: deleteUser
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: string
+          format: uuid
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/ApiVoid"
+  "/user/{id}/change-password":
+    put:
+      tags:
+      - 사용자
+      summary: 사용자 비밀번호 변경
+      description: 특정 ID를 가진 사용자의 비밀번호를 변경합니다.
+      operationId: updateUserPassword
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: string
+          format: uuid
+      requestBody:
+        content:
+          application/json:
+            schema:
+              "$ref": "#/components/schemas/UserPasswordRequest"
+        required: true
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/ApiUserResponse"
+  "/task/{id}/update":
+    put:
+      tags:
+      - 작업
+      summary: 작업 수정
+      description: 특정 작업을 수정합니다.
+      operationId: updateTask
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: string
+          format: uuid
+      - name: user
+        in: query
+        required: true
+        schema:
+          "$ref": "#/components/schemas/JwtPayload"
+      requestBody:
+        content:
+          application/json:
+            schema:
+              "$ref": "#/components/schemas/TaskRequest"
+        required: true
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/ApiTaskResponse"
+  "/task/bulk-update":
+    put:
+      tags:
+      - 작업
+      summary: 작업 일괄 수정
+      description: 여러 작업을 한 번에 수정합니다.
+      operationId: bulkUpdateTasks
+      parameters:
+      - name: user
+        in: query
+        required: true
+        schema:
+          "$ref": "#/components/schemas/JwtPayload"
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: array
+              items:
+                "$ref": "#/components/schemas/TaskBulkRequest"
+        required: true
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/ApiVoid"
+  "/project/{id}/update":
+    put:
+      tags:
+      - 프로젝트
+      summary: 프로젝트 수정
+      description: 특정 ID를 가진 프로젝트의 정보를 수정합니다.
+      operationId: updateProject
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: string
+          format: uuid
+      - name: user
+        in: query
+        required: true
+        schema:
+          "$ref": "#/components/schemas/JwtPayload"
+      requestBody:
+        content:
+          application/json:
+            schema:
+              "$ref": "#/components/schemas/ProjectRequest"
+        required: true
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/ApiProjectResponse"
+  "/workspace/create":
+    post:
+      tags:
+      - 워크스페이스
+      summary: 워크스페이스 생성
+      description: 새로운 워크스페이스를 생성합니다.
+      operationId: createWorkspace
+      parameters:
+      - name: user
+        in: query
+        required: true
+        schema:
+          "$ref": "#/components/schemas/JwtPayload"
+      requestBody:
+        content:
+          application/json:
+            schema:
+              "$ref": "#/components/schemas/WorkspaceRequest"
+        required: true
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/ApiWorkspaceResponse"
+  "/workspace-member/{workspaceId}/join":
+    post:
+      tags:
+      - 워크스페이스 멤버
+      summary: 워크스페이스 가입
+      description: 특정 워크스페이스에 멤버로 가입합니다.
+      operationId: joinWorkspace
+      parameters:
+      - name: workspaceId
+        in: path
+        required: true
+        schema:
+          type: string
+          format: uuid
+      - name: user
+        in: query
+        required: true
+        schema:
+          "$ref": "#/components/schemas/JwtPayload"
+      requestBody:
+        content:
+          application/json:
+            schema:
+              "$ref": "#/components/schemas/WorkspaceMemberRequest"
+        required: true
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/ApiVoid"
+  "/task/create":
+    post:
+      tags:
+      - 작업
+      summary: 작업 생성
+      description: 새로운 작업을 생성합니다.
+      operationId: createTask
+      parameters:
+      - name: user
+        in: query
+        required: true
+        schema:
+          "$ref": "#/components/schemas/JwtPayload"
+      requestBody:
+        content:
+          application/json:
+            schema:
+              "$ref": "#/components/schemas/TaskRequest"
+        required: true
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/ApiTaskResponse"
+  "/project/create":
+    post:
+      tags:
+      - 프로젝트
+      summary: 프로젝트 생성
+      description: 새로운 프로젝트를 생성합니다.
+      operationId: createProject
+      parameters:
+      - name: user
+        in: query
+        required: true
+        schema:
+          "$ref": "#/components/schemas/JwtPayload"
+      requestBody:
+        content:
+          application/json:
+            schema:
+              "$ref": "#/components/schemas/ProjectRequest"
+        required: true
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/ApiProjectResponse"
+  "/image/upload":
+    post:
+      tags:
+      - 이미지 업로드
+      summary: 이미지 업로드
+      description: 여러 이미지를 업로드합니다.
+      operationId: uploadImages
+      parameters:
+      - name: files
+        in: query
+        required: true
+        schema:
+          type: array
+          items:
+            type: string
+            format: binary
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: string
+  "/auth/social-login":
+    post:
+      tags:
+      - 인증
+      summary: 소셜 로그인
+      description: 소셜 로그인 정보를 (NextAuth로 부터) 받아 로그인을 진행합니다.
+      operationId: socialLogin
+      requestBody:
+        content:
+          application/json:
+            schema:
+              "$ref": "#/components/schemas/SocialLoginRequest"
+        required: true
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/ApiLoginResponse"
+  "/auth/signup":
+    post:
+      tags:
+      - 인증
+      summary: 회원가입
+      description: 이메일, 이름, 비밀번호, 이메일 인증 토큰을 받아 회원가입을 진행합니다.
+      operationId: signup
+      requestBody:
+        content:
+          application/json:
+            schema:
+              "$ref": "#/components/schemas/UserRequest"
+        required: true
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/ApiUserResponse"
+  "/auth/send-signup-email":
+    post:
+      tags:
+      - 인증
+      summary: 회원가입 이메일 인증
+      description: 회원가입을 위한 이메일 인증 링크를 전송합니다.
+      operationId: sendSignupEmail
+      requestBody:
+        content:
+          application/json:
+            schema:
+              "$ref": "#/components/schemas/EmailRequest"
+        required: true
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/ApiString"
+  "/auth/send-reset-password-email":
+    post:
+      tags:
+      - 인증
+      summary: 비밀번호 재설정 이메일 인증
+      description: 비밀번호 재설정을 위한 이메일 인증 링크를 전송합니다.
+      operationId: sendResetPasswordEmail
+      requestBody:
+        content:
+          application/json:
+            schema:
+              "$ref": "#/components/schemas/EmailRequest"
+        required: true
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/ApiString"
+  "/auth/reset-password":
+    post:
+      tags:
+      - 인증
+      summary: 비밀번호 재설정
+      description: 이메일, 이메일 인증 토큰, 새 비밀번호를 받아 비밀번호 재설정을 진행합니다.
+      operationId: resetPassword
+      requestBody:
+        content:
+          application/json:
+            schema:
+              "$ref": "#/components/schemas/ResetPasswordRequest"
+        required: true
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/ApiString"
+  "/auth/refresh":
+    post:
+      tags:
+      - 인증
+      summary: 토큰 재발급
+      description: 리프레시 토큰을 받아 새로운 액세스 토큰과 리프레시 토큰을 발급합니다.
+      operationId: refresh
+      parameters:
+      - name: Authorization
+        in: header
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/ApiTokenResponse"
+  "/auth/login":
+    post:
+      tags:
+      - 인증
+      summary: 로그인
+      description: 이메일과 비밀번호를 받아 로그인을 진행합니다.
+      operationId: login
+      requestBody:
+        content:
+          application/json:
+            schema:
+              "$ref": "#/components/schemas/LoginRequest"
+        required: true
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/ApiLoginResponse"
+  "/workspace/{id}":
+    get:
+      tags:
+      - 워크스페이스
+      summary: 워크스페이스 조회
+      description: 특정 ID를 가진 워크스페이스의 정보를 조회합니다.
+      operationId: findWorkspaceById
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: string
+          format: uuid
+      - name: user
+        in: query
+        required: true
+        schema:
+          "$ref": "#/components/schemas/JwtPayload"
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/ApiWorkspaceResponse"
+  "/workspace/{id}/my-analytics":
+    get:
+      tags:
+      - 워크스페이스
+      summary: 내 작업 분석 정보 조회
+      description: 특정 ID를 가진 워크스페이스에서 나의 작업 분석 정보를 조회합니다.
+      operationId: findMyTaskCountsByWorkspaceId
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: string
+          format: uuid
+      - name: user
+        in: query
+        required: true
+        schema:
+          "$ref": "#/components/schemas/JwtPayload"
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/ApiTotalCountResponse"
+  "/workspace/{id}/analytics":
+    get:
+      tags:
+      - 워크스페이스
+      summary: 워크스페이스 분석 정보 조회
+      description: 특정 ID를 가진 워크스페이스의 분석 정보를 조회합니다.
+      operationId: findTaskCountsByWorkspaceId
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: string
+          format: uuid
+      - name: user
+        in: query
+        required: true
+        schema:
+          "$ref": "#/components/schemas/JwtPayload"
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/ApiTotalCountResponse"
+  "/workspace/all":
+    get:
+      tags:
+      - 워크스페이스
+      summary: 사용자가 속한 모든 워크스페이스 조회
+      description: 특정 사용자가 속한 모든 워크스페이스를 조회합니다.
+      operationId: findWorkspaces
+      parameters:
+      - name: user
+        in: query
+        required: true
+        schema:
+          "$ref": "#/components/schemas/JwtPayload"
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/ApiListWorkspaceResponse"
+  "/workspace-member/{workspaceId}/members/me":
+    get:
+      tags:
+      - 워크스페이스 멤버
+      summary: 워크스페이스 내 나의 멤버 정보 조회
+      description: 특정 워크스페이스 내에서 나의 멤버 정보를 조회합니다.
+      operationId: findMyWorkspaceMemberInfo
+      parameters:
+      - name: workspaceId
+        in: path
+        required: true
+        schema:
+          type: string
+          format: uuid
+      - name: user
+        in: query
+        required: true
+        schema:
+          "$ref": "#/components/schemas/JwtPayload"
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/ApiWorkspaceMemberInfoResponse"
+  "/workspace-member/{workspaceId}/members/all":
+    get:
+      tags:
+      - 워크스페이스 멤버
+      summary: 워크스페이스 멤버 조회
+      description: 특정 워크스페이스에 속한 모든 멤버의 정보를 조회합니다.
+      operationId: findWorkspaceMembers
+      parameters:
+      - name: workspaceId
+        in: path
+        required: true
+        schema:
+          type: string
+          format: uuid
+      - name: user
+        in: query
+        required: true
+        schema:
+          "$ref": "#/components/schemas/JwtPayload"
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/ApiWorkspaceMemberResponse"
+  "/task/{id}":
+    get:
+      tags:
+      - 작업
+      summary: 작업 조회
+      description: 특정 작업을 조회합니다.
+      operationId: findTask
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: string
+          format: uuid
+      - name: user
+        in: query
+        required: true
+        schema:
+          "$ref": "#/components/schemas/JwtPayload"
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/ApiTaskResponse"
+  "/task/workspace/{workspaceId}/me":
+    get:
+      tags:
+      - 작업
+      summary: 내 작업 조회
+      description: 특정 워크스페이스에 속한 내 작업을 조회합니다.
+      operationId: findMyTasksByWorkspace
+      parameters:
+      - name: workspaceId
+        in: path
+        required: true
+        schema:
+          type: string
+          format: uuid
+      - name: request
+        in: query
+        required: true
+        schema:
+          "$ref": "#/components/schemas/TaskFilterRequest"
+      - name: user
+        in: query
+        required: true
+        schema:
+          "$ref": "#/components/schemas/JwtPayload"
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/ApiListTaskResponse"
+  "/task/workspace/{workspaceId}/all":
+    get:
+      tags:
+      - 작업
+      summary: 워크스페이스 내 모든 작업 조회
+      description: 특정 워크스페이스에 속한 모든 작업을 조회합니다. 필터링 옵션을 사용할 수 있습니다.
+      operationId: findTasksByWorkspace
+      parameters:
+      - name: workspaceId
+        in: path
+        required: true
+        schema:
+          type: string
+          format: uuid
+      - name: request
+        in: query
+        required: true
+        schema:
+          "$ref": "#/components/schemas/TaskFilterRequest"
+      - name: user
+        in: query
+        required: true
+        schema:
+          "$ref": "#/components/schemas/JwtPayload"
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/ApiListTaskResponse"
+  "/task/project/{projectId}/all":
+    get:
+      tags:
+      - 작업
+      summary: 프로젝트 내 모든 작업 조회
+      description: 특정 프로젝트에 속한 모든 작업을 조회합니다. 필터링 옵션을 사용할 수 있습니다.
+      operationId: findTasks
+      parameters:
+      - name: projectId
+        in: path
+        required: true
+        schema:
+          type: string
+          format: uuid
+      - name: request
+        in: query
+        required: true
+        schema:
+          "$ref": "#/components/schemas/TaskFilterRequest"
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/ApiListTaskResponse"
+  "/project/{workspaceId}/all":
+    get:
+      tags:
+      - 프로젝트
+      summary: 워크스페이스 내 모든 프로젝트 조회
+      description: 특정 워크스페이스에 속한 모든 프로젝트를 조회합니다.
+      operationId: findProjectsByWorkspaceId
+      parameters:
+      - name: workspaceId
+        in: path
+        required: true
+        schema:
+          type: string
+          format: uuid
+      - name: user
+        in: query
+        required: true
+        schema:
+          "$ref": "#/components/schemas/JwtPayload"
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/ApiListProjectResponse"
+  "/project/{id}":
+    get:
+      tags:
+      - 프로젝트
+      summary: 프로젝트 조회
+      description: 특정 ID를 가진 프로젝트의 정보를 조회합니다.
+      operationId: findProjectById
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: string
+          format: uuid
+      - name: user
+        in: query
+        required: true
+        schema:
+          "$ref": "#/components/schemas/JwtPayload"
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/ApiProjectResponse"
+  "/project/{id}/analytics":
+    get:
+      tags:
+      - 프로젝트
+      summary: 프로젝트 분석 정보 조회
+      description: 특정 ID를 가진 프로젝트의 분석 정보를 조회합니다.
+      operationId: findTaskCountsByProjectId
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: string
+          format: uuid
+      - name: user
+        in: query
+        required: true
+        schema:
+          "$ref": "#/components/schemas/JwtPayload"
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/ApiTotalCountResponse"
+  "/auth/verify-token":
+    get:
+      tags:
+      - 인증
+      summary: 이메일 인증 토큰 확인
+      description: 이메일 인증 토큰을 확인하고, 유효한 경우 해당 이메일을 반환합니다.
+      operationId: verifyToken
+      parameters:
+      - name: token
+        in: query
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/ApiString"
+  "/workspace/{id}/delete":
+    delete:
+      tags:
+      - 워크스페이스
+      summary: 워크스페이스 삭제
+      description: 특정 ID를 가진 워크스페이스를 삭제합니다.
+      operationId: deleteWorkspace
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: string
+          format: uuid
+      - name: user
+        in: query
+        required: true
+        schema:
+          "$ref": "#/components/schemas/JwtPayload"
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/ApiString"
+  "/workspace-member/{workspaceId}/member/{memberId}/delete":
+    delete:
+      tags:
+      - 워크스페이스 멤버
+      summary: 워크스페이스 멤버 추방
+      description: 특정 워크스페이스 멤버를 추방합니다.
+      operationId: removeWorkspaceMember
+      parameters:
+      - name: workspaceId
+        in: path
+        required: true
+        schema:
+          type: string
+          format: uuid
+      - name: memberId
+        in: path
+        required: true
+        schema:
+          type: string
+          format: uuid
+      - name: user
+        in: query
+        required: true
+        schema:
+          "$ref": "#/components/schemas/JwtPayload"
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/ApiVoid"
+  "/task/{id}/delete":
+    delete:
+      tags:
+      - 작업
+      summary: 작업 삭제
+      description: 특정 작업을 삭제합니다.
+      operationId: deleteTask
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: string
+          format: uuid
+      - name: user
+        in: query
+        required: true
+        schema:
+          "$ref": "#/components/schemas/JwtPayload"
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/ApiVoid"
+  "/project/{id}/delete":
+    delete:
+      tags:
+      - 프로젝트
+      summary: 프로젝트 삭제
+      description: 특정 ID를 가진 프로젝트를 삭제합니다.
+      operationId: deleteProject
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: string
+          format: uuid
+      - name: user
+        in: query
+        required: true
+        schema:
+          "$ref": "#/components/schemas/JwtPayload"
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/ApiString"
+components:
+  schemas:
+    WorkspaceRequest:
+      title: 'WORKSPACE_REQ_01 : 워크스페이스 생성 요청 DTO'
+      required:
+      - name
+      type: object
+      properties:
+        name:
+          type: string
+          description: 워크스페이스 이름
+          example: 팀 플라노바
+        image:
+          type: string
+          description: 워크스페이스 이미지
+          example: https://example.com/image.png
+    JwtPayload:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+    ApiWorkspaceResponse:
+      type: object
+      properties:
+        statusCode:
+          type: integer
+          description: HTTP 상태 코드
+          format: int32
+          example: 200
+        message:
+          type: string
+          description: 응답 메시지
+          example: 요청이 성공적으로 처리되었습니다.
+        timestamp:
+          type: string
+          description: 응답 생성 일시
+          example: '2023-10-05T14:48:00'
+        method:
+          type: string
+          description: 요청 HTTP 메서드
+          example: GET
+        path:
+          type: string
+          description: 요청 경로
+          example: "/api/auth"
+        body:
+          "$ref": "#/components/schemas/WorkspaceResponse"
+    ProjectResponse:
+      title: 'PROJECT_RES_01 : 프로젝트 응답 DTO'
+      type: object
+      properties:
+        id:
+          type: string
+          description: 프로젝트 ID
+          format: uuid
+          example: 550e8400-e29b-41d4-a716-446655440000
+        name:
+          type: string
+          description: 프로젝트 이름
+          example: 플라노바 개발
+        image:
+          type: string
+          description: 프로젝트 이미지 URL
+          example: https://example.com/project-image.png
+        workspaceId:
+          type: string
+          description: 워크스페이스 ID
+          format: uuid
+          example: 550e8400-e29b-41d4-a716-446655440000
+        createdAt:
+          type: string
+          description: 프로젝트 생성일
+          format: date-time
+      description: 워크스페이스에 속한 프로젝트 목록
+      example: 프로젝트 정보 객체 리스트
+    UserResponse:
+      title: 'USER_RES_01 : 사용자 응답 DTO'
+      type: object
+      properties:
+        id:
+          type: string
+          description: 사용자 고유 ID
+          format: uuid
+          example: 550e8400-e29b-41d4-a716-446655440000
+        name:
+          type: string
+          description: 사용자 이름
+          example: John Doe
+        email:
+          type: string
+          description: 사용자 이메일
+          example: john.doe@example.com
+        image:
+          type: string
+          description: 사용자 프로필 이미지 URL
+          example: https://example.com/profile.jpg
+        provider:
+          type: string
+          description: 계정 유형
+          example: 이메일 || 구글 || 카카오
+          enum:
+          - 이메일
+          - 카카오
+          - 구글
+        createdAt:
+          type: string
+          description: 계정 생성 일시
+          format: date-time
+      description: 워크스페이스 소유자 정보
+      example: 사용자 정보 객체
+    WorkspaceResponse:
+      title: 'WORKSPACE_RES_01 : 워크스페이스 응답 DTO'
+      type: object
+      properties:
+        id:
+          type: string
+          description: 워크스페이스 ID
+          format: uuid
+          example: 550e8400-e29b-41d4-a716-446655440000
+        name:
+          type: string
+          description: 워크스페이스 이름
+          example: 팀 플라노바
+        image:
+          type: string
+          description: 워크스페이스 이미지 URL
+          example: https://example.com/image.png
+        inviteCode:
+          type: string
+          description: 워크스페이스 초대 코드
+          example: ABCD1234
+        owner:
+          "$ref": "#/components/schemas/UserResponse"
+        createdAt:
+          type: string
+          description: 워크스페이스 생성일
+          format: date-time
+        projects:
+          type: array
+          description: 워크스페이스에 속한 프로젝트 목록
+          example: 프로젝트 정보 객체 리스트
+          items:
+            "$ref": "#/components/schemas/ProjectResponse"
+      description: 응답 바디
+    ApiVoid:
+      type: object
+      properties:
+        statusCode:
+          type: integer
+          description: HTTP 상태 코드
+          format: int32
+          example: 200
+        message:
+          type: string
+          description: 응답 메시지
+          example: 요청이 성공적으로 처리되었습니다.
+        timestamp:
+          type: string
+          description: 응답 생성 일시
+          example: '2023-10-05T14:48:00'
+        method:
+          type: string
+          description: 요청 HTTP 메서드
+          example: GET
+        path:
+          type: string
+          description: 요청 경로
+          example: "/api/auth"
+        body:
+          type: object
+          description: 응답 바디
+    UserUpdateRequest:
+      title: 'USER_REQ_02 : 사용자 정보 수정 요청 DTO'
+      type: object
+      properties:
+        name:
+          type: string
+          description: 사용자 이름
+          example: John Doe
+        image:
+          type: string
+          description: 사용자 프로필 이미지 URL
+          example: https://example.com/profile.jpg
+    ApiUserResponse:
+      type: object
+      properties:
+        statusCode:
+          type: integer
+          description: HTTP 상태 코드
+          format: int32
+          example: 200
+        message:
+          type: string
+          description: 응답 메시지
+          example: 요청이 성공적으로 처리되었습니다.
+        timestamp:
+          type: string
+          description: 응답 생성 일시
+          example: '2023-10-05T14:48:00'
+        method:
+          type: string
+          description: 요청 HTTP 메서드
+          example: GET
+        path:
+          type: string
+          description: 요청 경로
+          example: "/api/auth"
+        body:
+          "$ref": "#/components/schemas/UserResponse"
+    UserPasswordRequest:
+      title: 'USER_REQ_03 : 사용자 비밀번호 변경 요청 DTO'
+      type: object
+      properties:
+        currentPassword:
+          type: string
+          description: 현재 비밀번호
+          example: currentPassword123
+        newPassword:
+          type: string
+          description: 새 비밀번호
+          example: newPassword123
+    TaskRequest:
+      title: 'TASK_REQ_01 : 작업 생성 요청 DTO'
+      required:
+      - assigneeId
+      - dueDate
+      - name
+      - projectId
+      - startDate
+      type: object
+      properties:
+        name:
+          type: string
+          description: 작업 이름
+          example: 디자인 작업
+        description:
+          type: string
+          description: 작업 설명
+          example: 웹사이트 메인 페이지 디자인 작업
+        assigneeId:
+          type: string
+          description: 담당자 ID
+          format: uuid
+          example: 550e8400-e29b-41d4-a716-446655440000
+        projectId:
+          type: string
+          description: 프로젝트 ID
+          format: uuid
+          example: 550e8400-e29b-41d4-a716-446655440000
+        startDate:
+          type: string
+          description: 시작일
+          format: date-time
+        dueDate:
+          type: string
+          description: 종료일
+          format: date-time
+        status:
+          type: string
+          description: 작업 상태
+          example: TODO || IN_PROGRESS || COMPLETED || IN_REVIEW
+          enum:
+          - BACKLOG
+          - TODO
+          - IN_PROGRESS
+          - IN_REVIEW
+          - COMPLETED
+        priority:
+          type: string
+          description: 작업 우선순위
+          example: LOW || MEDIUM || HIGH || CRITICAL
+          enum:
+          - LOW
+          - MEDIUM
+          - HIGH
+          - CRITICAL
+    ApiTaskResponse:
+      type: object
+      properties:
+        statusCode:
+          type: integer
+          description: HTTP 상태 코드
+          format: int32
+          example: 200
+        message:
+          type: string
+          description: 응답 메시지
+          example: 요청이 성공적으로 처리되었습니다.
+        timestamp:
+          type: string
+          description: 응답 생성 일시
+          example: '2023-10-05T14:48:00'
+        method:
+          type: string
+          description: 요청 HTTP 메서드
+          example: GET
+        path:
+          type: string
+          description: 요청 경로
+          example: "/api/auth"
+        body:
+          "$ref": "#/components/schemas/TaskResponse"
+    TaskResponse:
+      title: 'TASK_RES_01 : 작업 응답 DTO'
+      type: object
+      properties:
+        id:
+          type: string
+          description: 작업 ID
+          format: uuid
+          example: 550e8400-e29b-41d4-a716-446655440000
+        name:
+          type: string
+          description: 작업 이름
+          example: 새로운 기능 추가
+        description:
+          type: string
+          description: 작업 설명
+          example: 사용자 로그인 기능 추가
+        startDate:
+          type: string
+          description: 작업 시작일
+          format: date-time
+        dueDate:
+          type: string
+          description: 작업 마감일
+          format: date-time
+        status:
+          type: string
+          description: 작업 상태
+          example: TODO || IN_PROGRESS || COMPLETED || IN_REVIEW
+          enum:
+          - BACKLOG
+          - TODO
+          - IN_PROGRESS
+          - IN_REVIEW
+          - COMPLETED
+        priority:
+          type: string
+          description: 작업 우선순위
+          example: LOW || MEDIUM || HIGH || CRITICAL
+          enum:
+          - LOW
+          - MEDIUM
+          - HIGH
+          - CRITICAL
+        assignee:
+          "$ref": "#/components/schemas/UserResponse"
+        project:
+          "$ref": "#/components/schemas/ProjectResponse"
+        createdAt:
+          type: string
+          description: 작업 생성일
+          format: date-time
+        position:
+          type: integer
+          description: 작업 위치
+          format: int32
+          example: 1000
+      description: 응답 바디
+    TaskBulkRequest:
+      title: 'TASK_REQ_03 : 작업 일괄 수정 요청 DTO'
+      type: object
+      properties:
+        id:
+          type: string
+          description: 작업 ID
+          format: uuid
+          example: 550e8400-e29b-41d4-a716-446655440000
+        status:
+          type: string
+          description: 작업 상태
+          example: TODO || IN_PROGRESS || COMPLETED || IN_REVIEW
+          enum:
+          - BACKLOG
+          - TODO
+          - IN_PROGRESS
+          - IN_REVIEW
+          - COMPLETED
+        position:
+          type: integer
+          description: 작업 위치
+          format: int32
+          example: 1000
+    ProjectRequest:
+      title: 'PROJECT_REQ_01 : 프로젝트 생성 요청 DTO'
+      required:
+      - name
+      type: object
+      properties:
+        name:
+          type: string
+          description: 프로젝트 이름
+          example: 플라노바 개발
+        image:
+          type: string
+          description: 프로젝트 이미지
+          example: https://example.com/project-image.png
+        workspaceId:
+          type: string
+          description: 워크스페이스 ID
+          format: uuid
+          example: 550e8400-e29b-41d4-a716-446655440000
+    ApiProjectResponse:
+      type: object
+      properties:
+        statusCode:
+          type: integer
+          description: HTTP 상태 코드
+          format: int32
+          example: 200
+        message:
+          type: string
+          description: 응답 메시지
+          example: 요청이 성공적으로 처리되었습니다.
+        timestamp:
+          type: string
+          description: 응답 생성 일시
+          example: '2023-10-05T14:48:00'
+        method:
+          type: string
+          description: 요청 HTTP 메서드
+          example: GET
+        path:
+          type: string
+          description: 요청 경로
+          example: "/api/auth"
+        body:
+          "$ref": "#/components/schemas/ProjectResponse"
+    WorkspaceMemberRequest:
+      title: 'WORKSPACE_MEMBER_REQ_01 : 워크스페이스 멤버 추가 요청 DTO'
+      required:
+      - inviteCode
+      type: object
+      properties:
+        inviteCode:
+          type: string
+          description: 워크스페이스 초대 코드
+          example: INVITE1234
+    SocialLoginRequest:
+      title: 'AUTH_REQ_03 : 소셜 로그인 요청 DTO'
+      required:
+      - email
+      - name
+      type: object
+      properties:
+        name:
+          type: string
+          description: 사용자 이름
+          example: John Doe
+        email:
+          type: string
+          description: 사용자 이메일
+          example: john.doe@example.com
+        password:
+          type: string
+          description: 사용자 비밀번호
+          example: password123
+        image:
+          type: string
+          description: 사용자 프로필 이미지 URL
+          example: https://example.com/profile.jpg
+        provider:
+          type: string
+          description: 소셜 로그인 제공자
+          example: 구글 || 카카오
+          enum:
+          - 이메일
+          - 카카오
+          - 구글
+    ApiLoginResponse:
+      type: object
+      properties:
+        statusCode:
+          type: integer
+          description: HTTP 상태 코드
+          format: int32
+          example: 200
+        message:
+          type: string
+          description: 응답 메시지
+          example: 요청이 성공적으로 처리되었습니다.
+        timestamp:
+          type: string
+          description: 응답 생성 일시
+          example: '2023-10-05T14:48:00'
+        method:
+          type: string
+          description: 요청 HTTP 메서드
+          example: GET
+        path:
+          type: string
+          description: 요청 경로
+          example: "/api/auth"
+        body:
+          "$ref": "#/components/schemas/LoginResponse"
+    LoginResponse:
+      title: 'AUTH_RES_01 : 로그인 응답 DTO'
+      type: object
+      properties:
+        user:
+          "$ref": "#/components/schemas/UserResponse"
+        serverTokens:
+          "$ref": "#/components/schemas/TokenResponse"
+      description: 응답 바디
+    TokenResponse:
+      title: 서버토큰 응답 DTO
+      type: object
+      properties:
+        accessToken:
+          type: string
+          description: 액세스 토큰
+          example: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...
+        refreshToken:
+          type: string
+          description: 리프레시 토큰
+          example: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...
+        expiresIn:
+          type: integer
+          description: 액세스 토큰 만료 시간(초)
+          format: int64
+          example: 3600
+      description: 사용자 토큰 정보
+    UserRequest:
+      title: 'USER_REQ_01 : 회원가입 요청 DTO'
+      required:
+      - email
+      - name
+      - password
+      - token
+      type: object
+      properties:
+        name:
+          type: string
+          description: 사용자 이름
+          example: John Doe
+        email:
+          type: string
+          description: 사용자 이메일
+          example: john.doe@example.com
+        token:
+          type: string
+          description: 이메일 인증 토큰
+          example: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...
+        password:
+          type: string
+          description: 사용자 비밀번호
+          example: password123
+        image:
+          type: string
+          description: 사용자 프로필 이미지 URL
+          example: https://example.com/profile.jpg
+        provider:
+          type: string
+          description: 계정 유형
+          example: 이메일 || 구글 || 카카오
+          enum:
+          - 이메일
+          - 카카오
+          - 구글
+    EmailRequest:
+      title: 'EMAIL_REQ_01 : 이메일 요청 DTO'
+      type: object
+      properties:
+        email:
+          type: string
+          description: 사용자 이메일
+          example: john.doe@example.com
+        type:
+          type: string
+          description: 이메일 타입
+          example: signup || reset
+    ApiString:
+      type: object
+      properties:
+        statusCode:
+          type: integer
+          description: HTTP 상태 코드
+          format: int32
+          example: 200
+        message:
+          type: string
+          description: 응답 메시지
+          example: 요청이 성공적으로 처리되었습니다.
+        timestamp:
+          type: string
+          description: 응답 생성 일시
+          example: '2023-10-05T14:48:00'
+        method:
+          type: string
+          description: 요청 HTTP 메서드
+          example: GET
+        path:
+          type: string
+          description: 요청 경로
+          example: "/api/auth"
+        body:
+          type: string
+          description: 응답 바디
+    ResetPasswordRequest:
+      title: 'USER_REQ_04 : 비밀번호 재설정 요청 DTO'
+      required:
+      - email
+      - password
+      - token
+      type: object
+      properties:
+        email:
+          type: string
+          description: 사용자 이메일
+          example: john.doe@example.com
+        token:
+          type: string
+          description: 이메일 인증 토큰
+          example: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...
+        password:
+          type: string
+          description: 새 비밀번호
+          example: newPassword123
+    ApiTokenResponse:
+      type: object
+      properties:
+        statusCode:
+          type: integer
+          description: HTTP 상태 코드
+          format: int32
+          example: 200
+        message:
+          type: string
+          description: 응답 메시지
+          example: 요청이 성공적으로 처리되었습니다.
+        timestamp:
+          type: string
+          description: 응답 생성 일시
+          example: '2023-10-05T14:48:00'
+        method:
+          type: string
+          description: 요청 HTTP 메서드
+          example: GET
+        path:
+          type: string
+          description: 요청 경로
+          example: "/api/auth"
+        body:
+          "$ref": "#/components/schemas/TokenResponse"
+    LoginRequest:
+      title: 'AUTH_REQ_01 : 로그인 요청 DTO'
+      required:
+      - email
+      - password
+      type: object
+      properties:
+        email:
+          type: string
+          description: 사용자 이메일
+          example: john.doe@example.com
+        password:
+          type: string
+          description: 사용자 비밀번호
+          example: password123
+    ApiTotalCountResponse:
+      type: object
+      properties:
+        statusCode:
+          type: integer
+          description: HTTP 상태 코드
+          format: int32
+          example: 200
+        message:
+          type: string
+          description: 응답 메시지
+          example: 요청이 성공적으로 처리되었습니다.
+        timestamp:
+          type: string
+          description: 응답 생성 일시
+          example: '2023-10-05T14:48:00'
+        method:
+          type: string
+          description: 요청 HTTP 메서드
+          example: GET
+        path:
+          type: string
+          description: 요청 경로
+          example: "/api/auth"
+        body:
+          "$ref": "#/components/schemas/TotalCountResponse"
+    CountDetail:
+      title: 작업 수 세부 DTO
+      type: object
+      properties:
+        total:
+          type: integer
+          description: 총 작업 수
+          format: int64
+          example: 42
+        difference:
+          type: integer
+          description: 전월대비 작업 수 차이
+          format: int64
+          example: 5
+      description: 백로그 작업 수
+    TotalCountResponse:
+      title: 'TASK_RES_03 : 작업 총계 응답 DTO'
+      type: object
+      properties:
+        totalCount:
+          "$ref": "#/components/schemas/CountDetail"
+        assignedCount:
+          "$ref": "#/components/schemas/CountDetail"
+        incompleteCount:
+          "$ref": "#/components/schemas/CountDetail"
+        completedCount:
+          "$ref": "#/components/schemas/CountDetail"
+        overdueCount:
+          "$ref": "#/components/schemas/CountDetail"
+        todoCount:
+          "$ref": "#/components/schemas/CountDetail"
+        inProgressCount:
+          "$ref": "#/components/schemas/CountDetail"
+        inReviewCount:
+          "$ref": "#/components/schemas/CountDetail"
+        backlogCount:
+          "$ref": "#/components/schemas/CountDetail"
+      description: 응답 바디
+    ApiListWorkspaceResponse:
+      type: object
+      properties:
+        statusCode:
+          type: integer
+          description: HTTP 상태 코드
+          format: int32
+          example: 200
+        message:
+          type: string
+          description: 응답 메시지
+          example: 요청이 성공적으로 처리되었습니다.
+        timestamp:
+          type: string
+          description: 응답 생성 일시
+          example: '2023-10-05T14:48:00'
+        method:
+          type: string
+          description: 요청 HTTP 메서드
+          example: GET
+        path:
+          type: string
+          description: 요청 경로
+          example: "/api/auth"
+        body:
+          type: array
+          description: 응답 바디
+          items:
+            "$ref": "#/components/schemas/WorkspaceResponse"
+    ApiWorkspaceMemberInfoResponse:
+      type: object
+      properties:
+        statusCode:
+          type: integer
+          description: HTTP 상태 코드
+          format: int32
+          example: 200
+        message:
+          type: string
+          description: 응답 메시지
+          example: 요청이 성공적으로 처리되었습니다.
+        timestamp:
+          type: string
+          description: 응답 생성 일시
+          example: '2023-10-05T14:48:00'
+        method:
+          type: string
+          description: 요청 HTTP 메서드
+          example: GET
+        path:
+          type: string
+          description: 요청 경로
+          example: "/api/auth"
+        body:
+          "$ref": "#/components/schemas/WorkspaceMemberInfoResponse"
+    WorkspaceMemberInfoResponse:
+      title: 'WORKSPACE_MEMBER_RES_02 : 워크스페이스 멤버 정보 응답 DTO'
+      type: object
+      properties:
+        id:
+          type: string
+          description: 사용자 고유 ID
+          format: uuid
+          example: 550e8400-e29b-41d4-a716-446655440000
+        name:
+          type: string
+          description: 사용자 이름
+          example: John Doe
+        email:
+          type: string
+          description: 사용자 이메일
+          example: john.doe@example.com
+        image:
+          type: string
+          description: 사용자 프로필 이미지 URL
+          example: https://example.com/profile.jpg
+        provider:
+          type: string
+          description: 계정 유형
+          example: 이메일 || 구글 || 카카오
+          enum:
+          - 이메일
+          - 카카오
+          - 구글
+        createdAt:
+          type: string
+          description: 계정 생성 일시
+          format: date-time
+        role:
+          type: string
+          description: 워크스페이스 멤버 역할
+          example: ADMIN || MEMBER
+          enum:
+          - ADMIN
+          - MEMBER
+        joinedAt:
+          type: string
+          description: 워크스페이스 가입 일시
+          format: date-time
+      description: 응답 바디
+    ApiWorkspaceMemberResponse:
+      type: object
+      properties:
+        statusCode:
+          type: integer
+          description: HTTP 상태 코드
+          format: int32
+          example: 200
+        message:
+          type: string
+          description: 응답 메시지
+          example: 요청이 성공적으로 처리되었습니다.
+        timestamp:
+          type: string
+          description: 응답 생성 일시
+          example: '2023-10-05T14:48:00'
+        method:
+          type: string
+          description: 요청 HTTP 메서드
+          example: GET
+        path:
+          type: string
+          description: 요청 경로
+          example: "/api/auth"
+        body:
+          "$ref": "#/components/schemas/WorkspaceMemberResponse"
+    WorkspaceMemberResponse:
+      title: 'WORKSPACE_MEMBER_RES_01 : 워크스페이스 멤버 응답 DTO'
+      type: object
+      properties:
+        workspaceId:
+          type: string
+          description: 워크스페이스 ID
+          format: uuid
+          example: 550e8400-e29b-41d4-a716-446655440000
+        members:
+          type: array
+          description: 워크스페이스 멤버 리스트
+          items:
+            "$ref": "#/components/schemas/WorkspaceMemberInfoResponse"
+        memberCount:
+          type: integer
+          description: 워크스페이스 멤버 수
+          format: int32
+          example: 5
+      description: 응답 바디
+    TaskFilterRequest:
+      title: 'TASK_REQ_02 : 작업 필터 요청 DTO'
+      type: object
+      properties:
+        status:
+          type: string
+          description: 작업 상태
+          example: TODO || IN_PROGRESS || COMPLETED || IN_REVIEW
+          enum:
+          - BACKLOG
+          - TODO
+          - IN_PROGRESS
+          - IN_REVIEW
+          - COMPLETED
+        priority:
+          type: string
+          description: 작업 우선순위
+          example: LOW || MEDIUM || HIGH || CRITICAL
+          enum:
+          - LOW
+          - MEDIUM
+          - HIGH
+          - CRITICAL
+        assigneeId:
+          type: string
+          description: 담당자 ID
+          format: uuid
+          example: 550e8400-e29b-41d4-a716-446655440000
+        projectId:
+          type: string
+          description: 프로젝트 ID
+          format: uuid
+          example: 550e8400-e29b-41d4-a716-446655440000
+        search:
+          type: string
+          description: 검색어
+          example: 버그 수정
+        startDate:
+          type: string
+          description: 시작 날짜
+          example: '2024-01-01'
+        dueDate:
+          type: string
+          description: 마감 날짜
+          example: '2024-12-31'
+        take:
+          type: integer
+          description: 건너뛸 항목 수
+          format: int32
+          example: 0
+    ApiListTaskResponse:
+      type: object
+      properties:
+        statusCode:
+          type: integer
+          description: HTTP 상태 코드
+          format: int32
+          example: 200
+        message:
+          type: string
+          description: 응답 메시지
+          example: 요청이 성공적으로 처리되었습니다.
+        timestamp:
+          type: string
+          description: 응답 생성 일시
+          example: '2023-10-05T14:48:00'
+        method:
+          type: string
+          description: 요청 HTTP 메서드
+          example: GET
+        path:
+          type: string
+          description: 요청 경로
+          example: "/api/auth"
+        body:
+          type: array
+          description: 응답 바디
+          items:
+            "$ref": "#/components/schemas/TaskResponse"
+    ApiListProjectResponse:
+      type: object
+      properties:
+        statusCode:
+          type: integer
+          description: HTTP 상태 코드
+          format: int32
+          example: 200
+        message:
+          type: string
+          description: 응답 메시지
+          example: 요청이 성공적으로 처리되었습니다.
+        timestamp:
+          type: string
+          description: 응답 생성 일시
+          example: '2023-10-05T14:48:00'
+        method:
+          type: string
+          description: 요청 HTTP 메서드
+          example: GET
+        path:
+          type: string
+          description: 요청 경로
+          example: "/api/auth"
+        body:
+          type: array
+          description: 응답 바디
+          items:
+            "$ref": "#/components/schemas/ProjectResponse"
+  securitySchemes:
+    Bearer Authentication:
+      type: http
+      name: Authorization
+      in: header
+      scheme: bearer
+      bearerFormat: JWT
